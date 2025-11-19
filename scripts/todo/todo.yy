@@ -1,0 +1,13 @@
+{
+  "$GMScript":"v1",
+  "%Name":"todo",
+  "isCompatibility":false,
+  "isDnD":false,
+  "name":"todo",
+  "parent":{
+    "name":"EarnMoney",
+    "path":"EarnMoney.yyp",
+  },
+  "resourceType":"GMScript",
+  "resourceVersion":"2.0",
+}

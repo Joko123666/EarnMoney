@@ -1,0 +1,56 @@
+{
+  "demons": [
+    {
+      "id": "lucian",
+      "name": "루시안",
+      "portraits": {
+        "default": "sDemonPortrait_Lucian",
+        "half": "sDemonPortrait_Lucian_Half"
+      },
+      "dialogue_sequences": {
+        "start": [
+          { "type": "dialogue", "text": "흥, 또 왔나. 이번엔 얼마나 버틸지 구경해 주지.", "portrait": "default" },
+          { "type": "dialogue", "text": "네놈의 탐욕이 나를 불렀다. 자, 시작해 봐라.", "portrait": "default" }
+        ],
+        "stage_1_win": [
+          { "type": "dialogue", "text": "제법이군. 하지만 네 운도 여기까지다.", "portrait": "default" }
+        ],
+        "stage_1_lose": [
+          { "type": "dialogue", "text": "꼴 좋군. 역시 인간이란 어리석어.", "portrait": "default" }
+        ],
+        "stage_2_win": [
+           { "type": "dialogue", "text": "흠. 제법이군.", "portrait": "default" }
+        ],
+        "stage_2_lose": [
+          { "type": "dialogue", "text": "네놈의 밑천이 드러났구나. 다시 시작해라.", "portrait": "default" }
+        ]
+      }
+    },
+    {
+      "id": "belial",
+      "name": "벨리알",
+      "portraits": {
+        "default": "sDemonPortrait_Belial",
+        "half": "sDemonPortrait_Belial_Half"
+      },
+      "dialogue_sequences": {
+        "start": [
+          { "type": "dialogue", "text": "어서 와, 친구. 이번엔 대박을 터뜨려 보자고!", "portrait": "default" },
+          { "type": "dialogue", "text": "자, 자! 돈 놓고 돈 먹기! 얼마나 짜릿해?", "portrait": "default" }
+        ],
+        "stage_1_win": [
+          { "type": "dialogue", "text": "그렇지! 그렇게 하는 거야! 아주 잘했어!", "portrait": "default" }
+        ],
+        "stage_1_lose": [
+          { "type": "dialogue", "text": "에이, 아깝네. 다음엔 꼭 될 거야!", "portrait": "default" }
+        ],
+        "stage_2_win": [
+          { "type": "dialogue", "text": "축하해. 2단계 통과야.", "portrait": "default" }
+        ],
+        "stage_2_lose": [
+          { "type": "dialogue", "text": "괜찮아, 괜찮아. 누구나 그럴 수 있지.", "portrait": "default" }
+        ]
+      }
+    }
+  ]
+}

@@ -1,0 +1,206 @@
+// =================================================================
+// 1. 악마 데이터 JSON 파일
+// 경로: datafiles/demons_data.json
+//demon_num 1 바엘 _ 절대적인 힘을가진 악마, 근육질의 멋있는 몸을 가진 야성적인 악마, 기본적으로 인간의 얼굴이지만 감정에 따라 고양이와 개구리의 얼굴이 나타남, 인간의 의지를 보여주는것을 좋게 보며 불리한 상황에서 승리하면 우호도가 증가한다.
+//demon_num 3 바사고 _ 피골이 상접하고 창백한 피부에 안대를 하고있는 악마, 은자와 같은 분위기를 내며 최소한의 일만 한다, 과거,현재,미래를 내다 볼 수 있으며, 어떠한 경우에도 우호도가 증가하지 않는다.
+//demon_num 6 발레포르 _ 당나귀 머리의 모피 케이프를 두른 헬창 악마, 귀족적인 말투를 쓰지만 인간에게 도둑질을 적극적으로 권유한다, 도둑질이나 사기행각에 가까운 행동을 하면 우호도가 증가한다.
+//demon_num 15 엘리고스 _ 중성적인 외모의 뱀을 두른 정장의 남성, 웅변하는듯한 말투를 쓰며 인간의 용기를 부추기는 말을 자주 한다, 미래 예지를 통해 어떤 선택지가 승리로 이어질지 알려주며, 미래예지에 의존하지 않고 큰 승리를 거두면 우호도가 증가한다.
+
+// =================================================================
+{
+  "demons": [
+    {
+      "id": "lucian",
+      "name": "루시안",
+      "sprite_portrait": "sDemonPortrait_Lucian",
+      "dialogue_lines": {
+        "start": [
+          "흥, 또 왔나. 이번엔 얼마나 버틸지 구경해 주지.",
+          "네놈의 탐욕이 나를 불렀다. 자, 시작해 봐라.",
+          "내기를 시작하지. 네 영혼을 걸고."
+        ],
+        "win": [
+          "제법이군. 하지만 네 운도 여기까지다.",
+          "흥, 이번 판은 운이 좋았을 뿐이야."
+        ],
+        "lose": [
+          "꼴 좋군. 역시 인간이란 어리석어.",
+          "네놈의 밑천이 드러났구나. 다시 시작해라."
+        ],
+        "buy_artifact": [
+          "그런 잡동사니에 돈을 쓰다니, 현명한 건지 어리석은 건지.",
+          "그게 도움이 될 것 같나?"
+        ]
+      }
+    },
+    {
+      "id": "belial",
+      "name": "벨리알",
+      "sprite_portrait": "sDemonPortrait_Belial",
+      "dialogue_lines": {
+        "start": [
+          "어서 와, 친구. 이번엔 대박을 터뜨려 보자고!",
+          "자, 자! 돈 놓고 돈 먹기! 얼마나 짜릿해?",
+          "두려워할 것 없어. 내가 뒤를 봐주고 있으니."
+        ],
+        "win": [
+          "그렇지! 그렇게 하는 거야! 아주 잘했어!",
+          "봤어? 내가 행운을 빌어줬다고!"
+        ],
+        "lose": [
+          "에이, 아깝네. 다음엔 꼭 될 거야!",
+          "괜찮아, 괜찮아. 누구나 그럴 수 있지."
+        ],
+        "buy_artifact": [
+          "오, 그거 좋은 물건이야! 탁월한 선택인데?",
+          "좋아! 현명한 투자야!"
+        ]
+      }
+    }
+  ]
+}
+
+// =================================================================
+// 2. 데이터 로딩 및 악마 선택
+// 오브젝트: oGame
+// 이벤트: Create
+// =================================================================
+
+// 전역 변수로 악마 데이터와 현재 악마를 저장할 구조체(struct)를 초기화합니다.
+global.demons_data = -1;
+global.current_demon = -1;
+
+// JSON 파일을 읽어와서 파싱한 후 전역 변수에 저장합니다.
+var _json_string = file_text_open_read(working_directory + "datafiles/demons_data.json");
+if (_json_string != -1) {
+    var _data = "";
+    while (!file_text_eof(_json_string)) {
+        _data += file_text_readln(_json_string);
+    }
+    file_text_close(_json_string);
+    
+    global.demons_data = json_parse(_data);
+} else {
+    show_debug_message("ERROR: demons_data.json 파일을 찾을 수 없습니다!");
+}
+
+// --- 새 게임 시작 함수 ---
+// 이 부분은 실제 게임에서 '새 게임 시작' 시점에 호출되어야 합니다.
+// 여기서는 Create 이벤트에서 바로 실행하여 테스트합니다.
+function start_new_game() {
+    // 등록된 악마 중 한 명을 랜덤하게 선택합니다.
+    if (global.demons_data != -1) {
+        var _demon_list = global.demons_data.demons;
+        var _random_index = irandom(array_length(_demon_list) - 1);
+        global.current_demon = _demon_list[_random_index];
+        
+        // 게임 시작 대사를 출력합니다.
+        show_dialogue("start");
+    }
+}
+
+// 새 게임 시작 함수 호출
+start_new_game();
+
+// =================================================================
+// 3. 대화 출력 함수
+// 스크립트: game_scripts (또는 신규 스크립트)
+// =================================================================
+
+/// @function show_dialogue(situation)
+/// @description 현재 악마의 상황에 맞는 대사를 랜덤하게 골라 대화창을 생성합니다.
+/// @param {string} situation    대화 상황 (예: "start", "win", "lose")
+function show_dialogue(situation) {
+    // 현재 활성화된 대화창이 있다면 새로 만들지 않습니다.
+    if (instance_exists(oDialogueBox)) {
+        return;
+    }
+
+    if (global.current_demon != -1) {
+        // 상황에 맞는 대사 목록을 가져옵니다.
+        var _dialogue_list = variable_struct_get(global.current_demon.dialogue_lines, situation);
+        
+        // 대사 목록에서 랜덤한 대사 하나를 선택합니다.
+        var _random_index = irandom(array_length(_dialogue_list) - 1);
+        var _text_to_show = _dialogue_list[_random_index];
+        
+        // 대화창 오브젝트를 생성하고, 필요한 정보를 넘겨줍니다.
+        var _dialogue_instance = instance_create_layer(0, 0, "Instances", oDialogueBox);
+        
+        _dialogue_instance.dialogue_text = _text_to_show;
+        _dialogue_instance.portrait_sprite = asset_get_index(global.current_demon.sprite_portrait);
+        _dialogue_instance.demon_name = global.current_demon.name;
+    }
+}
+
+// =================================================================
+// 4. 대화창 오브젝트: oDialogueBox
+// =================================================================
+
+// -----------------------------------------------------------------
+// 이벤트: Create
+// -----------------------------------------------------------------
+// 대화 내용, 초상화, 이름 변수를 초기화합니다.
+dialogue_text = "대사 없음";
+portrait_sprite = -1;
+demon_name = "이름 없음";
+
+// 대화창의 크기 및 위치 설정
+box_width = 800;
+box_height = 200;
+box_x = (display_get_gui_width() - box_width) / 2;
+box_y = display_get_gui_height() - box_height - 20;
+
+// 텍스트 타이핑 효과를 위한 변수
+draw_text = "";
+text_progress = 0;
+text_speed = 0.5; // 1초에 2글자씩
+
+// -----------------------------------------------------------------
+// 이벤트: Step
+// -----------------------------------------------------------------
+// 텍스트 타이핑 효과 처리
+if (text_progress < string_length(dialogue_text)) {
+    text_progress += text_speed;
+    draw_text = string_copy(dialogue_text, 1, floor(text_progress));
+} else {
+    draw_text = dialogue_text; // 타이핑 완료
+}
+
+// 마우스 클릭 또는 키보드 입력으로 대화창 닫기
+if (mouse_check_button_pressed(mb_left) || keyboard_check_pressed(vk_space)) {
+    // 텍스트가 다 나오지 않았다면 한번에 보여주기
+    if (draw_text != dialogue_text) {
+        text_progress = string_length(dialogue_text);
+    } else {
+        // 다 나왔다면 인스턴스 파괴
+        instance_destroy();
+    }
+}
+
+// -----------------------------------------------------------------
+// 이벤트: Draw GUI
+// -----------------------------------------------------------------
+// 반투명한 검은색 박스 그리기
+draw_set_color(c_black);
+draw_set_alpha(0.7);
+draw_rectangle(box_x, box_y, box_x + box_width, box_y + box_height, false);
+draw_set_alpha(1.0); // 알파값 초기화
+
+// 악마 초상화 그리기
+if (sprite_exists(portrait_sprite)) {
+    draw_sprite(portrait_sprite, 0, box_x + 80, box_y + 100);
+}
+
+// 악마 이름 그리기
+draw_set_font(fnt_dialogue_name); // 이름용 폰트 (미리 생성 필요)
+draw_set_halign(fa_left);
+draw_set_valign(fa_top);
+draw_set_color(c_yellow);
+draw_text(box_x + 180, box_y + 20, demon_name);
+
+// 대사 내용 그리기 (타이핑 효과 적용된 텍스트)
+draw_set_font(fnt_dialogue_main); // 대사용 폰트 (미리 생성 필요)
+draw_set_color(c_white);
+// draw_text_ext는 박스 너비에 맞춰 자동으로 줄바꿈을 해줍니다.
+draw_text_ext(box_x + 180, box_y + 60, draw_text, 30, box_width - 200);

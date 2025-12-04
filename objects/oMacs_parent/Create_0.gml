@@ -33,6 +33,16 @@ applied_artifact_this_turn = noone; // 이번 턴에 발동된 아티팩트 ID
 // 아티팩트에 의해 활성화되는 기능 플래그
 reroll_enabled = false; // '다시 굴리기' 기능 활성화 여부
 
+// 인터랙션 쿨타임 (UI 점멸 방지용)
+interact_cooldown = 0;
+
+/// @function register_result(is_win)
+/// @description 게임 결과를 기록하고 통계를 업데이트합니다. (자식 객체에서 호출)
+/// @param {boolean} is_win 승리 여부
+register_result = function(_is_win) {
+    record_game_result(_is_win);
+}
+
 
 // UI 패널 크기 및 위치
 ui_panel_width = 1200;
@@ -65,3 +75,28 @@ button_play = { rel_x: _info_padding, rel_y: _action_btn_y, w: _full_btn_w, h: 5
 
 // 닫기 버튼 (절대 좌표)
 button_internal_close = { x: panel_x + ui_panel_width - 40, y: panel_y + 15, w: 32, h: 32, label: "", sprite: sButton };
+
+// 룰 설명 버튼 (절대 좌표, 닫기 버튼 왼쪽)
+button_rule = { x: panel_x + ui_panel_width - 80, y: panel_y + 15, w: 32, h: 32, label: "?", sprite: sButton };
+
+// 룰 팝업 닫기 버튼 (초기화, 실제 좌표는 팝업 열릴 때 계산)
+button_rule_close = { x: 0, y: 0, w: 32, h: 32, label: "X", sprite: sButton };
+
+// 룰 설명 관련 변수
+show_rule_popup = false;
+rule_description = "룰 설명이 없습니다.";
+
+// global.minigames_list에서 룰 설명 가져오기
+var _my_name = object_get_name(object_index);
+if (variable_global_exists("minigames_list")) {
+    for (var i = 0; i < array_length(global.minigames_list); i++) {
+        var _data = global.minigames_list[i];
+        if (_data.object_name == _my_name) {
+            // game_name = _data.name; // 자식 객체가 이름을 덮어쓰는 경우가 많으므로 일단 주석 처리 (필요시 활성화)
+            if (variable_struct_exists(_data, "rule_description")) {
+                rule_description = _data.rule_description;
+            }
+            break;
+        }
+    }
+}

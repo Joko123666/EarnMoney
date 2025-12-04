@@ -1,4 +1,4 @@
-draw_set_font(font_main);
+draw_set_font(mainfont);
 
 // ▒ Draw Event - 인벤토리 슬롯 및 아티팩트 UI 그리기
 var items_per_row = 3;

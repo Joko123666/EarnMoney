@@ -13,6 +13,10 @@ var _game_screen_h = panel_h - 80;
 var _game_cx = _game_screen_x + _game_screen_w / 2;
 var _game_cy = _game_screen_y + _game_screen_h / 2;
 
+// --- 정보 패널 기준 좌표 (버튼 위치 계산용) ---
+var _info_panel_x = panel_x + panel_w - info_panel_width - 20;
+var _info_panel_y = panel_y + 60;
+
 // --- 카드 위치 정의 ---
 var _player_card_x = _game_cx;
 var _player_card_y = _game_cy + 100;
@@ -64,11 +68,19 @@ switch (state) {
 
         // --- 추가 정보 그리기 ---
         if (state == CardMac2State.PLAYER_CHOICE) {
-            // 동적 배당률 표시
+            // 동적 배당률 표시 (상대 좌표 계산)
             draw_set_font(fnt_dialogue_name);
-            draw_text(button_choice_high.x + button_choice_high.w/2, button_choice_high.y - 25, "x" + string(payout_high));
-            draw_text(button_choice_low.x + button_choice_low.w/2, button_choice_low.y - 25, "x" + string(payout_low));
-            draw_text(button_choice_same.x + button_choice_same.w/2, button_choice_same.y - 25, "x" + string(payout_same));
+            var _high_x = _info_panel_x + button_choice_high.rel_x;
+            var _high_y = _info_panel_y + button_choice_high.rel_y;
+            draw_text(_high_x + button_choice_high.w/2, _high_y - 25, "x" + string(payout_high));
+            
+            var _low_x = _info_panel_x + button_choice_low.rel_x;
+            var _low_y = _info_panel_y + button_choice_low.rel_y;
+            draw_text(_low_x + button_choice_low.w/2, _low_y - 25, "x" + string(payout_low));
+            
+            var _same_x = _info_panel_x + button_choice_same.rel_x;
+            var _same_y = _info_panel_y + button_choice_same.rel_y;
+            draw_text(_same_x + button_choice_same.w/2, _same_y - 25, "x" + string(payout_same));
         } else if (state == CardMac2State.RESULT && anim_timer <= 0) {
             // 최종 결과 메시지
             draw_set_font(fnt_dialogue_main);
@@ -78,9 +90,6 @@ switch (state) {
 }
 
 // --- 정보 패널 UI 그리기 (오른쪽) ---
-var _info_panel_x = panel_x + panel_w - info_panel_width - 20;
-var _info_panel_y = panel_y + 60;
-
 switch (state) {
     case CardMac2State.PLAYER_CHOICE:
         draw_custom_button(button_choice_high, button_choice_high.sprite, _info_panel_x, _info_panel_y);
@@ -93,3 +102,9 @@ switch (state) {
         }
         break;
 }
+
+// 그리기 설정 초기화
+draw_set_color(c_white);
+draw_set_halign(fa_left);
+draw_set_valign(fa_top);
+draw_set_alpha(1);

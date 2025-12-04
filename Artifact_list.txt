@@ -36,7 +36,7 @@ global.artifact_list = [
 	{ 
         name: "Coin_iron", 
         display_name: "강철 동전",
-        description: "무겁고 단단한 강청 동전. 동전 던지기를 할 때 다시 던지기 기능이 추가된다.",
+        description: "무겁고 단단한 강철 동전. 동전 던지기를 할 때 다시 던지기 기능이 추가된다.",
         purchase_price: 30, 
         selling_price: 6, 
         usable: false, 

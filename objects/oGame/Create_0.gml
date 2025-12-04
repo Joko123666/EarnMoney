@@ -15,6 +15,20 @@ if (_artifact_file != -1) {
     global.artifact_list = []; // 파일이 없으면 빈 배열로 초기화
 }
 
+// --- 미니게임 데이터 로딩 ---
+global.minigames_list = [];
+var _minigames_file = file_text_open_read("minigames.json");
+if (_minigames_file != -1) {
+    var _json_string = "";
+    while (!file_text_eof(_minigames_file)) {
+        _json_string += file_text_readln(_minigames_file);
+    }
+    file_text_close(_minigames_file);
+    global.minigames_list = json_parse(_json_string);
+} else {
+    show_debug_message("!!! CRITICAL ERROR: minigames.json not found!");
+}
+
 script_execute(stage_list);
 
 global.ui_blocking_input = false; // UI가 활성화되어 입력을 막고 있는지 여부
@@ -30,6 +44,15 @@ global.consecutive_losses = 0;
 global.consecutive_win = 0;
 global.card_ten_stacks = 0;
 
+// --- 통계 관련 변수 ---
+global.session_play_time = 0; // 총 플레이 시간 (초 단위)
+global.total_gambles = 0;     // 도박 시도 횟수
+global.total_wins = 0;        // 도박 승리 횟수
+global.total_losses = 0;      // 도박 패배 횟수
+global.max_consecutive_wins = 0;   // 최대 연승 횟수
+global.max_consecutive_losses = 0; // 최대 연패 횟수
+global.total_earnings = 0;    // 도박으로 번 총 금액
+
 
 current_stage_index = 1; // 현재 스테이지 추적
 target_amount = 200;
@@ -40,6 +63,10 @@ game_over_state = "none"; // "none", "dialogue", "red_screen", "fade_to_black", 
 game_over_alpha = 0;
 game_over_timer = 0;
 stage_clear_state = "none"; // "none", "dialogue"
+
+// 라운드 종료 팝업 상태 제어 변수
+round_result_confirmed = false;
+next_stage_confirmed = false;
 
 // --- 인스턴스 생성 ---
 
@@ -105,21 +132,36 @@ function start_new_game() {
 			
             // 한글 주석: 첫 번째 스테이지의 데이터를 설정합니다.
 			var stage1_data = global.stage_list.Stage1;
+			
+			// --- 특성 적용: 시작 자금 & 기회 ---
+			// start_money: 특성 단계당 첫 스테이지의 시작금액 +10
+			var _bonus_money = get_player_trait_level("start_money") * 10;
+			Player_money = stage1_data.start_amount + _bonus_money;
+			
+			// start_losetoken: 특성 단계당 +2
+			var _bonus_lt = get_player_trait_level("start_losetoken") * 2;
+			lose_token = 0 + _bonus_lt;
+
 			chance_last = stage1_data.chance_count;
-			Player_money = stage1_data.start_amount;
 			target_amount = stage1_data.target_amount;
-			lose_token = 0;
+			
 			
 			// --- 연출 관련 변수 초기화 ---
 			game_over_state = "none";
 			game_over_alpha = 0;
 			game_over_timer = 0;
 			stage_clear_state = "none";
+            round_result_confirmed = false;
+            next_stage_confirmed = false;
 			
 	        start_game_state = true;
-
+	        
+	        // 2번 특성(start_choose - 아티팩트 선택)은 구현 보류 (이름 중복 문제 해결 후 적용)
 	    }
 }
+
+// 게임 시작 시 초기화 함수 실행 (중요: 이 호출이 있어야 global.current_demon이 설정됨)
+start_new_game();
 
 
 /// @function give_prize(prize_type)
@@ -145,13 +187,15 @@ function give_prize(_prize_type = 1) { // 기본값을 1로 설정
         }
     }
 
-    // 한글 주석: oPrize 인스턴스를 항상 생성합니다.
-    var _prize_inst = instance_create_layer(0, 0, "Instances", oPrize);
-    
-    // 한글 주석: 생성된 oPrize 인스턴스에 필요한 정보를 전달합니다.
-    _prize_inst.prize_type = _prize_type;
-    _prize_inst.target_slot = _empty_slot_index;
-    _prize_inst.slots_full = _slots_full;
+    // 한글 주석: oPrize 인스턴스가 없을 때만 생성합니다. (중복 방지)
+    if (!instance_exists(oPrize)) {
+        var _prize_inst = instance_create_layer(0, 0, "Instances", oPrize);
+        _prize_inst.prize_type = _prize_type;
+        _prize_inst.target_slot = _empty_slot_index;
+        _prize_inst.slots_full = _slots_full;
+        
+        // --- 특성 적용: stage_choose (스테이지-선택지 추가) ---
+        // 이 특성은 oPrize 내부에서 처리하거나, 여기서 oPrize의 변수를 설정해줘야 함.
+        // 현재 oPrize 구조를 모르므로 oPrize 수정 시 처리 예정.
+    }
 }
-
-

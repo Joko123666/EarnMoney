@@ -26,7 +26,7 @@ draw_set_alpha(0.8);
 draw_rectangle(0, 0, _gui_width, _gui_height, false);
 draw_set_alpha(1.0);
 
-draw_set_font(font_main);
+draw_set_font(mainfont);
 draw_set_halign(fa_center);
 draw_set_valign(fa_middle);
 
@@ -103,7 +103,7 @@ if (_num_display_choices > 0) {
         
         draw_set_font(fnt_dialogue_main);
         draw_text_ext(_x + _w / 2, _y + 210, _choice.desc, 18, _w - 20);
-        draw_set_font(font_main);
+        draw_set_font(mainfont);
     }
 }
 

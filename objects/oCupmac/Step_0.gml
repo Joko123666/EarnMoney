@@ -65,7 +65,7 @@ switch (state) {
         if (animation_timer <= 0) {
             state = CupGameState.SHUFFLING;
             animation_timer = shuffle_duration;
-            alarm[0] = 1;
+            alarm[1] = 1;
         }
         break;
 
@@ -77,7 +77,7 @@ switch (state) {
         }
         animation_timer--;
         if (animation_timer <= 0) {
-            alarm[0] = -1;
+            alarm[1] = -1;
             state = CupGameState.CHOOSING;
             result_message = "Choose a cup!";
         }

@@ -1,5 +1,10 @@
 // ▒ 인벤토리 변수 초기화
-atti_list = array_create(6, -1); // -1은 빈 슬롯을 의미합니다.
+// 기본 슬롯 6개 + 특성 보너스 (레벨당 1개 추가 가정)
+var _base_slots = 6;
+var _bonus_slots = get_player_trait_level("passive_inventorysize"); 
+var _total_slots = _base_slots + _bonus_slots;
+
+atti_list = array_create(_total_slots, -1); // -1은 빈 슬롯을 의미합니다.
 selected_index = -1;
 sprite_background = sBox;
 sprite_artifact = sArtifact;
@@ -99,27 +104,79 @@ function use_artifact() {
             return;
         }
 
+        var _destroyed_count = 0;
+        var _effect_applied = false;
+
         // 아티팩트 효과 적용
         switch (_artifact.name) {
-            case "Lucky_Clover":
-                show_message("행운이 가득한 기분이다!");
+            // --- 소모품 (재화 획득) ---
+            case "Common_goldfreg":
+                oGame.Player_money += 20;
+                _effect_applied = true;
                 break;
-            case "Magic_Dice":
-                show_message("다음 슬롯머신은 무조건 성공할 것 같다!");
+            case "Common_goldcard":
+                oGame.Player_money += 40;
+                _effect_applied = true;
                 break;
+                
+            // --- 블랙 시리즈 (머신 파괴 및 보상) ---
+            case "Coin_black":
+            case "Dice_black":
+            case "Cup_black":
+            case "Ball_black":
+            case "Card_black":
+            case "Hand_black":
+                var _target_type = "";
+                if (_artifact.name == "Coin_black") _target_type = "Coin";
+                else if (_artifact.name == "Dice_black") _target_type = "Dice";
+                else if (_artifact.name == "Cup_black") _target_type = "Cup";
+                else if (_artifact.name == "Ball_black") _target_type = "Ball";
+                else if (_artifact.name == "Card_black") _target_type = "Card";
+                else if (_artifact.name == "Hand_black") _target_type = "Hand";
+
+                if (_target_type != "") {
+                    // 1. 배치된 머신 중 해당 타입 파괴
+                    for (var i = 0; i < array_length(oGame.mac_slots); i++) {
+                        var _slot = oGame.mac_slots[i];
+                        if (instance_exists(_slot.instance_id) && _slot.instance_id.mac_type == _target_type) {
+                            instance_destroy(_slot.instance_id);
+                            _slot.instance_id = noone;
+                            _destroyed_count++;
+                        }
+                    }
+                    
+                    // 2. 파괴된 머신 수 * 100D 지급
+                    // (아티팩트 자체도 파괴되므로 최소 1개 취급? -> 설명엔 "이 아티팩트와... 파괴한 게임의 수" 라고 되어있음. 
+                    // 보통 이런 로그라이크에선 게임기 파괴 보상만 카운트하므로 게임기만 카운트하고 + 자체 보상 100을 더할지 결정 필요.
+                    // 설명: "이 아티팩트와 ... 게임을 파괴하고 파괴한 게임의 수 만큼 100D" -> 게임기만 카운트하는 것이 자연스러움)
+                    
+                    if (_destroyed_count > 0) {
+                        oGame.Player_money += _destroyed_count * 100;
+                        show_message(string(_destroyed_count) + "개의 게임기가 파괴되어 " + string(_destroyed_count * 100) + "D를 획득했습니다.");
+                        _effect_applied = true;
+                    } else {
+                         show_message("파괴할 수 있는 게임기가 없습니다.");
+                         // 효과가 없으므로 아이템 소모 안 함
+                         return;
+                    }
+                }
+                break;
+                
             default:
                 show_message("아직 효과가 구현되지 않았습니다: " + _artifact.name);
-                break;
+                return; // 구현되지 않은 경우 소모 방지
         }
         
-        // 1회용 아이템인 경우 사용 후 제거
-        atti_list[selected_index] = -1;
-        selected_index = -1;
-        
-        // 정보 패널 닫기 및 UI 상태 복원
-        info_panel_visible = false;
-        global.ui_blocking_input = false;
-        global.active_ui_object = noone;
+        if (_effect_applied) {
+            // 1회용 아이템인 경우 사용 후 제거
+            atti_list[selected_index] = -1;
+            selected_index = -1;
+            
+            // 정보 패널 닫기 및 UI 상태 복원
+            info_panel_visible = false;
+            global.ui_blocking_input = false;
+            global.active_ui_object = noone;
+        }
     }
 }
 
@@ -135,5 +192,5 @@ function is_full() {
 }
 
 // 테스트용 초기 아이템 추가
-add_artifact("Coin_gold");
-add_artifact("Lucky_Clover");
+// add_artifact("Coin_gold");
+// add_artifact("Lucky_Clover");

@@ -51,6 +51,13 @@ switch (state) {
             card_target_x = panel_x + 20 + (panel_w - info_panel_width - 50) / 2;
             card_target_y = panel_y + 60 + (panel_h - 80) / 2;
             
+            // --- Card_glass (유리 카드) 효과: 10% 확률로 카드 확인 ---
+            peek_card = false;
+            if (check_artifact("Card_glass") && random(1) < 0.1) {
+                peek_card = true;
+                // 메시지나 시각적 효과 추가 가능
+            }
+            
             anim_timer = reveal_duration;
             state = CardMacState.REVEAL;
             audio_play_sound(SE_draw, 1, false);
@@ -85,9 +92,21 @@ switch (state) {
             var _context = { machine: id, bet: current_bet, win: _is_win, loss: !_is_win && !_is_ace, card: drawn_card_value };
             var applied = [];
 
+            // --- Card_punch (천공 카드) 기록 업데이트 ---
+            // 승리(10)는 true, 패배는 false, 에이스(무승부)는 기록하지 않음(혹은 패배로 칠지 기획 확인 필요. 여기선 기록 안함)
+            if (_is_win) {
+                array_push(match_history, true);
+            } else if (!_is_ace) {
+                array_push(match_history, false);
+            }
+            // 히스토리가 너무 길어지지 않게 관리 (선택 사항, 여기선 20개 유지)
+            if (array_length(match_history) > 20) array_delete(match_history, 0, 1);
+
+
             if (_is_win) {
                 result_message = "승리! 10배 획득!";
                 oGame.Player_money += floor(current_bet * payout_rate);
+                register_result(true);
                 audio_play_sound(SE_win, 1, false);
                 applied = apply_artifacts("ON_WIN", _context);
             } else if (check_artifact("Card_ace") && _is_ace) {
@@ -98,6 +117,7 @@ switch (state) {
             } else {
                 result_message = "패배...";
                 oGame.lose_token++;
+                register_result(false);
                 audio_play_sound(SE_lose, 1, false);
                 applied = apply_artifacts("ON_LOSE", _context);
             }

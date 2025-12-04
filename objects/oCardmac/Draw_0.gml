@@ -26,6 +26,11 @@ switch (state) {
             var _draw_y = _game_cy + lengthdir_y(_radius, _angle);
             draw_sprite(sCard_back, 0, _draw_x, _draw_y);
         }
+        
+        // --- Card_glass (유리 카드) 효과: 엿보기 ---
+        if (variable_instance_exists(id, "peek_card") && peek_card) {
+            draw_sprite_ext(sGames_card, drawn_card_value, _draw_x, _draw_y, 1, 1, 0, c_white, 0.5);
+        }
         break;
 
     case CardMacState.DRAWING:
@@ -33,6 +38,14 @@ switch (state) {
         for (var i = 0; i < 10; i++) {
             draw_sprite(sCard_back, 0, area_deck.x + area_deck.w/2, (area_deck.y + area_deck.h/2) - i * 2);
         }
+        
+        // --- Card_glass (유리 카드) 효과: 엿보기 ---
+        if (variable_instance_exists(id, "peek_card") && peek_card) {
+            // 맨 위 카드 위에 반투명하게 정보 표시
+            var _top_card_y = (area_deck.y + area_deck.h/2) - 18;
+            draw_sprite_ext(sGames_card, drawn_card_value, area_deck.x + area_deck.w/2, _top_card_y, 1, 1, 0, c_white, 0.5);
+        }
+        
         // 덱 주변에 클릭 유도용 반짝임 효과
         var _glow_alpha = 0.5 + 0.5 * sin(get_timer() / 200000);
         draw_set_alpha(_glow_alpha);

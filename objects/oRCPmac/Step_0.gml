@@ -56,6 +56,7 @@ switch (state) {
                 payout_rate = win_payout;
                 result_message = "You Win!";
                 consecutive_losses = 0;
+                register_result(true);
                 applied = apply_artifacts("ON_WIN", _context);
             } else { // 플레이어 패배
                 winner = 1;
@@ -63,6 +64,7 @@ switch (state) {
                 result_message = "You Lose!";
                 oGame.lose_token++;
                 consecutive_losses++;
+                register_result(false);
                 applied = apply_artifacts("ON_LOSE", _context);
             }
 

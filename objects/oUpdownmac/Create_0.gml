@@ -34,9 +34,10 @@ dice_reveal_scale = 3.5;
 dice1_scale = dice_default_scale;
 dice2_scale = dice_default_scale;
 
-// --- 버튼 레이아웃 정의 (절대 좌표) ---
-button_bet_down = { x: 1025, y: 251, w: 139, h: 29, label: "-" };
-button_bet_up   = { x: 1185, y: 251, w: 139, h: 29, label: "+" };
+// --- 버튼 레이아웃 정의 (정보 패널 기준 상대 좌표로 변환) ---
+// 부모 Draw 이벤트 호환성을 위해 rel_x, rel_y 및 sprite 추가
+button_bet_down = { rel_x: 45, rel_y: 161, w: 139, h: 29, label: "-", sprite: sButton };
+button_bet_up   = { rel_x: 205, rel_y: 161, w: 139, h: 29, label: "+", sprite: sButton };
 
 // 메인 행동 버튼 (Play / Play Again)
 button_play       = { x: 1025, y: 490, w: 299, h: 47, label: "Play" };

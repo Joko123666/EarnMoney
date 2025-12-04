@@ -12,51 +12,6 @@ if (alart_count > 0)	//Empty Money Alart
 	draw_text(_centerx, _centery, "Not Enough Money");
 }
 
-
-
-if (show_game_over_popup) {
-    var _cx = display_get_gui_width() / 2;
-    var _cy = display_get_gui_height() / 2;
-    
-    var _popup_x = _cx - popup_width / 2;
-    var _popup_y = _cy - popup_height / 2;
-    
-    // 팝업 배경
-    draw_set_color(c_black);
-    draw_set_alpha(0.8);
-    draw_rectangle(_popup_x, _popup_y, _popup_x + popup_width, _popup_y + popup_height, false);
-    draw_set_alpha(1);
-    
-    // "Game Over" 텍스트
-    draw_set_font(font_main);
-    draw_set_halign(fa_center);
-    draw_set_valign(fa_middle);
-    draw_set_color(c_white);
-    draw_text(_cx, _popup_y + 50, "Game Over");
-    
-    // 메인 메뉴로 버튼
-    button_main_menu.x = _cx - button_main_menu.w / 2;
-    button_main_menu.y = _cy + 20;
-    
-    var _btn = button_main_menu;
-    var _color = c_white;
-    var mx = device_mouse_x_to_gui(0);
-    var my = device_mouse_y_to_gui(0);
-
-    if (point_in_rectangle(mx, my, _btn.x, _btn.y, _btn.x + _btn.w, _btn.y + _btn.h)) {
-        _color = c_yellow;
-    }
-    
-    draw_sprite_stretched(sButton, 0, _btn.x, _btn.y, _btn.w, _btn.h);
-    draw_set_color(_color);
-    draw_text(_btn.x + _btn.w / 2, _btn.y + _btn.h / 2, _btn.label);
-    
-    // 그리기 설정 초기화
-    draw_set_color(c_white);
-    draw_set_halign(fa_left);
-    draw_set_valign(fa_top);
-}
-
 #region UI Elements
 
 // Get GUI dimensions

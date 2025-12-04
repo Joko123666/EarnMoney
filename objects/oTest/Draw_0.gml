@@ -8,8 +8,8 @@ var _fill_color_medium = #444444; // 중간 회색 배경 (콘솔 등)
 
 // --- 폰트 설정 (실제 프로젝트에 있는 폰트로 교체 필요) ---
 // font_main 또는 fnt_dialogue_main 등의 폰트가 있다고 가정합니다.
-if (font_exists(font_main)) {
-    draw_set_font(font_main);
+if (font_exists(mainfont)) {
+    draw_set_font(mainfont);
 } else {
     // 기본 폰트 사용
 }

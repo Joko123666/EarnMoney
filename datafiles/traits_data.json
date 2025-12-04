@@ -1,0 +1,82 @@
+[
+    { 
+        "name": "start_choose", 
+        "display_name": "시작-선택지 추가",
+        "description": "게임 시작 시 선택할 수 있는 게임의 선택지 추가.",
+        "purchase_price": 2, 
+        "traits_num": 1,
+        "traits_level": 1
+    },
+    { 
+        "name": "start_artifact", 
+        "display_name": "시작-아티팩트 선택",
+        "description": "게임 시작 시 아티팩트 를 랜덤하게 하나 받을 수 있다.",
+        "purchase_price": 2, 
+        "traits_num": 2,
+        "traits_level": 1
+    },
+    { 
+        "name": "start_money", 
+        "display_name": "시작-자금 증액",
+        "description": "시작할 때 받는 금액의 상승. 특성 단계당 첫 스테이지의 시작금액 +10",
+        "purchase_price": 2, 
+        "traits_num": 3,
+        "traits_level": 3
+    },
+    { 
+        "name": "start_losetoken", 
+        "display_name": "시작-LT증가",
+        "description": "게임을 시작할 때 LT를 받는다. 특성 단계당 +2",
+        "purchase_price": 2, 
+        "traits_num": 4,
+        "traits_level": 3
+    },
+    { 
+        "name": "stage_money", 
+        "display_name": "스테이지-자금 증액",
+        "description": "스테이지의 시작단계 때 받는 금액의 증가. 특성 단계당 스테이지 단계*5의 금액 추가.",
+        "purchase_price": 2, 
+        "traits_num": 11,
+        "traits_level": 5
+    },
+    { 
+        "name": "stage_chance", 
+        "display_name": "스테이지-기회 증가",
+        "description": "스테이지의 시작단계 때 도전기회 증가. 특성 단계만큼의 기회 추가.",
+        "purchase_price": 2, 
+        "traits_num": 12,
+        "traits_level": 3
+    },
+    { 
+        "name": "stage_artifact", 
+        "display_name": "스테이지- 아티팩트 선택지 추가",
+        "description": "스테이지의 시작단계 때 받는 아티팩트의 선택지 추가.",
+        "purchase_price": 2, 
+        "traits_num": 13,
+        "traits_level": 1
+    },
+    { 
+        "name": "stage_game", 
+        "display_name": "스테이지-게임 선택지 추가",
+        "description": "스테이지의 시작단계 때 받는 게임의 선택지 추가.",
+        "purchase_price": 2, 
+        "traits_num": 14,
+        "traits_level": 1
+    },
+    { 
+        "name": "passive_maxbet", 
+        "display_name": "상시-베팅상한 증가",
+        "description": "게임중 한번에 베팅할 수 있는 최대금액이 단계*10만큼 늘어난다.",
+        "purchase_price": 2, 
+        "traits_num": 21,
+        "traits_level": 5
+    },
+    { 
+        "name": "passive_inventorysize", 
+        "display_name": "상시- 인벤토리 상한 증가",
+        "description": "게임중 아티팩트를 보관하는 인벤토리의 상한이 단계만큼 증가한다.",
+        "purchase_price": 2, 
+        "traits_num": 22,
+        "traits_level": 2
+    }
+]

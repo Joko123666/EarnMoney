@@ -61,6 +61,12 @@ if (state == 1) { // BETTING 상태일 때만 그림
 
 // 닫기 버튼 (절대 좌표를 사용하므로 base_x, base_y는 0, 0)
 draw_custom_button(button_internal_close, button_internal_close.sprite, 0, 0);
+
+// 룰 설명 버튼
+draw_custom_button(button_rule, button_rule.sprite, 0, 0);
+draw_set_halign(fa_center); draw_set_valign(fa_middle);
+draw_set_color(c_black);
+draw_text(button_rule.x + button_rule.w/2, button_rule.y + button_rule.h/2, "?");
 #endregion
 
 #region Draw Equipped Artifacts
@@ -72,7 +78,7 @@ var _ax_start = _info_panel_x + (info_panel_width - _total_grid_w) / 2;
 var _ay_start = _info_panel_y + _info_panel_h - (_a_size * 2 + _a_spacing) - 45; // 하단 정렬
 
 // 제목 그리기
-draw_set_font(font_main);
+draw_set_font(mainfont);
 draw_set_halign(fa_center);
 draw_set_valign(fa_bottom);
 draw_text(_info_cx, _ay_start - 5, "적용 중인 아티팩트");

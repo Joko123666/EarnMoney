@@ -33,11 +33,14 @@ else {
             instance_destroy(_target_pos.instance_id);
         }
 
-        // 한글 주석: 선택된 도박 기계 인스턴스를 목표 위치에 생성합니다.
-        var _new_mac = instance_create_layer(_target_pos.x, _target_pos.y, "Instances", _choice.obj_id);
-
-        // 한글 주석: 새로 생성된 기계의 ID를 oGame의 슬롯 정보에 업데이트합니다.
-        _target_pos.instance_id = _new_mac;
+        if (_choice.obj_id != -1) {
+            // 한글 주석: 선택된 도박 기계 인스턴스를 목표 위치에 생성합니다.
+            var _new_mac = instance_create_layer(_target_pos.x, _target_pos.y, "Instances", _choice.obj_id);
+            // 한글 주석: 새로 생성된 기계의 ID를 oGame의 슬롯 정보에 업데이트합니다.
+            _target_pos.instance_id = _new_mac;
+        } else {
+            show_message("ERROR: Cannot create object. Index is -1. (Game: " + _choice.name + ")");
+        }
     } else {
         show_debug_message("ERROR: 유효하지 않은 target_slot으로 머신을 생성하려고 했습니다.");
     }

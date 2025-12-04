@@ -1,28 +1,17 @@
-/// @description oCupmac - Alarm 0 (Shuffle Cups)
+/// @description oCupmac - Alarm 0 (Reset Game)
+// 게임을 다시 시작하거나 UI를 닫을 때 변수를 초기 상태로 되돌립니다.
 
-// 컵 섞기 상태가 아니면 실행하지 않음
-if (state != CupGameState.SHUFFLING) {
-    exit;
-}
+// 1. 게임 상태 초기화 (제거됨: 부모 객체에서 IDLE로 설정한 것을 덮어쓰지 않도록 함)
+// state = CupGameState.BETTING;
 
-audio_play_sound(SE_spincup, 1, false);
+// 2. 게임 변수 초기화
+player_choice = -1;
+result_message = "";
+anim_timer = 0;
+applied_artifact_this_turn = noone;
 
-// 서로 다른 두 개의 컵을 무작위로 선택하여 목표 위치를 교환
-var cup1_idx = irandom(cup_count - 1);
-var cup2_idx = irandom(cup_count - 1);
-while (cup1_idx == cup2_idx) {
-    cup2_idx = irandom(cup_count - 1);
-}
+// 3. 컵 위치 및 공 초기화
+init_cups();
 
-// 두 컵의 목표 위치를 가져옴
-var target1_x = cups[cup1_idx].target_x;
-var target2_x = cups[cup2_idx].target_x;
-
-// 목표 위치만 교환. 컵 구조체(와 그 안의 has_ball 속성)는 이제 새로운 위치로 이동하게 됨.
-cups[cup1_idx].target_x = target2_x;
-cups[cup2_idx].target_x = target1_x;
-
-// 다음 섞기를 위해 알람을 다시 설정
-if (state == CupGameState.SHUFFLING) {
-    alarm[0] = shuffle_interval;
-}
+// 4. 섞기 알람 해제 (만약 섞는 중이었다면 정지)
+alarm[1] = -1;

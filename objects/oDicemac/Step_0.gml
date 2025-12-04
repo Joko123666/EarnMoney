@@ -17,7 +17,11 @@ switch (state) {
             if (oGame.Player_money >= current_bet) {
                 oGame.Player_money -= current_bet;
                 reroll_used_this_turn = false;
+                reroll_enabled = false; // 재던지기 초기화
                 
+                // 확률 초기화
+                array_copy(dice_probs, 0, dice_probs_default, 0, array_length(dice_probs_default));
+
                 // 아티팩트 효과 적용 (ON_ROUND_START)
                 var applied = apply_artifacts("ON_ROUND_START", { machine: id, bet: current_bet });
                 if (array_length(applied) > 0) {
@@ -56,10 +60,12 @@ switch (state) {
             if (_is_win) {
                 result_message = "You Win!";
                 oGame.Player_money += floor(current_bet * reward_rates[dice_result - 1]);
+                register_result(true);
                 applied = apply_artifacts("ON_WIN", _context);
             } else {
                 result_message = "You Lose...";
                 oGame.lose_token++;
+                register_result(false);
                 applied = apply_artifacts("ON_LOSE", _context);
             }
             

@@ -114,7 +114,7 @@ if (selected_trait_name != noone) {
         draw_set_color(_btn_color);
         draw_text(_upgrade_btn_x, _upgrade_btn_y - 5, "업그레이드");
         
-        draw_set_font(font_main);
+        draw_set_font(mainfont);
         draw_set_color(_btn_color);
         draw_text(_upgrade_btn_x, _upgrade_btn_y + 10, "(" + string(_cost) + " SP)");
     }

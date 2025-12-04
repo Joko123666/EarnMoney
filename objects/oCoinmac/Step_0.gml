@@ -25,6 +25,7 @@ switch (state) {
                 payout_rate = payout_rate_defalt;
                 heads_probability = heads_probability_defalt;
                 coin_count = 1;
+                reroll_enabled = false; // 재던지기 초기화
                 applied_artifact_this_turn = noone;
                 
                 var applied = apply_artifacts("ON_ROUND_START", { machine: id, bet: current_bet });
@@ -71,10 +72,12 @@ switch (state) {
                 audio_play_sound(SE_win, 1, false);
                 var win_amount = floor(current_bet * payout_rate);
                 oGame.Player_money += win_amount;
+                register_result(true); // 게임 결과 기록 (승리)
                 applied = apply_artifacts("ON_WIN", { machine: id, bet: current_bet, win_amount: win_amount });
             } else { // 패배
                 audio_play_sound(SE_lose, 1, false);
                 oGame.lose_token++;
+                register_result(false); // 게임 결과 기록 (패배)
                 applied = apply_artifacts("ON_LOSE", { machine: id, bet: current_bet });
             }
             

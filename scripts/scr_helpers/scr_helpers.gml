@@ -63,6 +63,9 @@ function apply_artifacts(trigger, context) {
             
             // 아티팩트 이름에 따라 하드코딩된 효과 적용
             switch (_artifact.name) {
+                // --- PASSIVE ---
+                case "Coin_iron": _machine.reroll_enabled = true; applied = true; break;
+
                 // --- ON_ROUND_START ---
                 case "Coin_copper": oGame.Player_money += 1; applied = true; break;
                 case "Coin_silver": oGame.Player_money += 2; applied = true; break;
@@ -76,10 +79,34 @@ function apply_artifacts(trigger, context) {
                     _machine.heads_probability += 0.1;
                     applied = true;
                     break;
+                case "Coin_DDD":
+                    if (variable_instance_exists(_machine, "coin_count")) {
+                        _machine.coin_count += 1;
+                        applied = true;
+                    }
+                    break;
                 case "Dice_copper": oGame.Player_money += 1; applied = true; break;
                 case "Dice_silver": oGame.Player_money += 2; applied = true; break;
                 case "Dice_gold": oGame.Player_money += 3; applied = true; break;
                 case "Dice_bone": _machine.payout_rate *= 1.5; applied = true; break;
+                case "Dice_low":
+                    if (variable_instance_exists(_machine, "dice_probs")) {
+                        var _change = 1/24;
+                        // 1,2,3 증가 / 4,5,6 감소
+                        _machine.dice_probs[0] += _change; _machine.dice_probs[1] += _change; _machine.dice_probs[2] += _change;
+                        _machine.dice_probs[3] -= _change; _machine.dice_probs[4] -= _change; _machine.dice_probs[5] -= _change;
+                        applied = true;
+                    }
+                    break;
+                case "Dice_high":
+                     if (variable_instance_exists(_machine, "dice_probs")) {
+                        var _change = 1/24;
+                        // 1,2,3 감소 / 4,5,6 증가
+                        _machine.dice_probs[0] -= _change; _machine.dice_probs[1] -= _change; _machine.dice_probs[2] -= _change;
+                        _machine.dice_probs[3] += _change; _machine.dice_probs[4] += _change; _machine.dice_probs[5] += _change;
+                        applied = true;
+                    }
+                    break;
                 case "Cup_wood": oGame.Player_money += 1; applied = true; break;
                 case "Cup_iron": oGame.Player_money += 2; applied = true; break;
                 case "Cup_gold": oGame.Player_money += 3; applied = true; break;
@@ -127,7 +154,31 @@ function apply_artifacts(trigger, context) {
                     }
                     break;
                 case "Card_punch":
-                    // This logic is complex and should be handled inside the machine's Step event
+                    // oCardmac의 match_history를 확인하여 패턴 매칭
+                    if (variable_instance_exists(_machine, "match_history") && variable_instance_exists(_machine, "target_pattern")) {
+                        var _hist = _machine.match_history;
+                        var _pat = _machine.target_pattern;
+                        
+                        // 현재 히스토리 길이가 패턴 길이보다 크거나 같아야 비교 가능
+                        if (array_length(_hist) >= array_length(_pat)) {
+                            var _match = true;
+                            // 가장 최근 5개 기록을 비교 (히스토리의 끝부분)
+                            var _start_idx = array_length(_hist) - array_length(_pat);
+                            for (var k = 0; k < array_length(_pat); k++) {
+                                if (_hist[_start_idx + k] != _pat[k]) {
+                                    _match = false;
+                                    break;
+                                }
+                            }
+                            
+                            if (_match) {
+                                oGame.Player_money += 100;
+                                applied = true;
+                                // 패턴 달성 후 기록 초기화 (중복 발동 방지)
+                                _machine.match_history = []; 
+                            }
+                        }
+                    }
                     break;
 
                 // --- ON_RESULT ---
@@ -198,4 +249,55 @@ function apply_artifacts(trigger, context) {
     }
     
     return applied_ids; // 발동된 아티팩트 이름들의 배열을 반환합니다.
+}
+
+/// @function check_artifact(_name)
+/// @description 인벤토리에 특정 아티팩트가 있는지 확인합니다.
+/// @param {string} _name - 확인할 아티팩트의 이름
+/// @return {boolean} - 아티팩트 존재 여부
+function check_artifact(_name)
+{
+    // oInventory_artifact 인스턴스가 존재하는지 확인
+    if (instance_exists(oInventory_artifact)) {
+        // oInventory_artifact의 has_artifact 함수를 호출하여 결과 반환
+        return oInventory_artifact.has_artifact(_name);
+    }
+    // 인스턴스가 없으면 false 반환
+    return false;
+}
+
+/// @function with_artifact_do(artifact_id, action_function)
+/// @description 특정 아티팩트가 있다면 주어진 함수를 실행합니다.
+/// @param {string} artifact_id - 확인할 아티팩트의 이름
+/// @param {function} action_function - 아티팩트가 있을 경우 실행할 함수
+function with_artifact_do(artifact_id, action_function) {
+    if (check_artifact(artifact_id)) {
+        action_function();
+    }
+}
+
+
+/// @function record_game_result(is_win)
+/// @description 게임 결과(승/패)를 기록하고 통계를 업데이트합니다.
+/// @param {boolean} is_win 승리 여부
+function record_game_result(is_win) {
+    global.total_gambles++;
+    
+    if (is_win) {
+        global.total_wins++;
+        global.consecutive_win++;
+        global.consecutive_losses = 0;
+        
+        if (global.consecutive_win > global.max_consecutive_wins) {
+            global.max_consecutive_wins = global.consecutive_win;
+        }
+    } else {
+        global.total_losses++;
+        global.consecutive_losses++;
+        global.consecutive_win = 0;
+        
+        if (global.consecutive_losses > global.max_consecutive_losses) {
+            global.max_consecutive_losses = global.consecutive_losses;
+        }
+    }
 }

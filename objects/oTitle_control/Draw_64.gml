@@ -4,7 +4,7 @@
 draw_set_halign(fa_center);
 draw_set_valign(fa_middle);
 // Make sure you have a font named 'font_main' or change this to a font you have
-draw_set_font(font_main);
+draw_set_font(mainfont);
 
 // Loop through and draw each button
 for (var i = 0; i < array_length(buttons); i++;) {

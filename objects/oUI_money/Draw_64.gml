@@ -33,7 +33,7 @@ draw_set_color(_border_color);
 draw_rectangle(_info_panel_x, _info_panel_y, _info_panel_x + _info_panel_w, _info_panel_y + _info_panel_h, true);
 
 // Draw Text
-draw_set_font(font_main);
+draw_set_font(mainfont);
 draw_set_halign(fa_center);
 draw_set_valign(fa_middle);
 draw_set_color(_text_color);
@@ -84,7 +84,7 @@ if (change_alpha > 0) {
     var _alpha = min(1, change_alpha);
     
     // 한글 주석: 계산된 위치, 색상, 투명도로 변화량 텍스트를 그립니다.
-    draw_set_font(font_main); // 폰트 설정
+    draw_set_font(mainfont); // 폰트 설정
     draw_set_halign(fa_left); // 정렬 설정
     draw_set_valign(fa_middle);
     draw_text_color(_info_panel_x + _info_panel_w + _padding, _info_panel_y + 40 + change_y_offset, _text, _color, _color, _color, _color, _alpha);

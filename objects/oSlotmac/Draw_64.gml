@@ -23,7 +23,7 @@ draw_set_alpha(1); // 알파값 복원
 // UI 표시 상태일 때만 그리기 (IDLE 상태가 아닐 때)
 if (state != SlotMachineState.IDLE) {
     // GUI 그리기 설정
-    draw_set_font(font_main);
+    draw_set_font(mainfont);
     draw_set_halign(fa_left);
     draw_set_valign(fa_top);
     draw_set_color(c_white);

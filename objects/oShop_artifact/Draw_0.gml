@@ -2,7 +2,7 @@
 var _slot_size = 64;
 var _slot_gap = 16;
 
-draw_set_font(font_main); // (가정) 전역 폰트 사용
+draw_set_font(mainfont); // (가정) 전역 폰트 사용
 draw_set_halign(fa_center);
 draw_set_valign(fa_top);
 

@@ -15,8 +15,12 @@ state = CardMacState.IDLE;
 mac_type = "Card";
 
 // --- 아티팩트 관련 변수 ---
-relevant_artifacts = ["Card_bronze", "Card_silver", "Card_gold", "Card_ace", "Card_punch", "Card_glass", "Card_ten", "Card_black"];
+relevant_artifacts = ["Card_ace", "Card_glass", "Card_double", "Card_punch", "Card_ten", "Card_bronze", "Card_silver", "Card_gold"];
 equipped_artifacts = [];
+
+// "Card_punch" (천공 카드) 추적용 변수: 패-승-패-패-승 패턴
+match_history = []; 
+target_pattern = [false, true, false, false, true]; // false: 패, true: 승
 
 // --- 베팅 관련 변수 ---
 current_bet = 10;
